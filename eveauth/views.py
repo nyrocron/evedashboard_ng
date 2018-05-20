@@ -10,6 +10,8 @@ from . import simple_sso
 
 EVEAUTH_SCOPES = [
     'esi-wallet.read_character_wallet.v1',
+    'esi-skills.read_skillqueue.v1',
+    'esi-skills.read_skills.v1',
 ]
 
 
@@ -55,5 +57,7 @@ def sso_callback(request):
     user = auth_request.user
 
     models.AccessToken.from_oauth(user, authentication_code)
+
+    auth_request.delete()
 
     return redirect(reverse('eveauth:char_list'))

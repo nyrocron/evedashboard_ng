@@ -1,12 +1,13 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 from pytz import UTC
 
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.utils.crypto import get_random_string
+from django.utils.timezone import now
 
 import dateutil.parser
-from django.utils.crypto import get_random_string
 
 from eveauth import simple_sso
 
@@ -30,26 +31,29 @@ class AccessToken(models.Model):
             raise ValueError("valid_for must be greate than 0 and less than or equal to 120.")
 
         validity_buffer = timedelta(seconds=valid_for)
-        if self.access_token is None or self.valid_until - validity_buffer < datetime.now():
+        if self.access_token is None or self.valid_until - validity_buffer < now():
             self.refresh()
 
-        raise NotImplementedError()
+        return self.access_token
 
     def refresh(self):
-        token_info = simple_sso.get_access_token(
+        token_info = simple_sso.token_from_refresh(
             settings.EVESSO_CLIENT_ID,
             settings.EVESSO_SECRET_KEY,
             self.refresh_token,
         )
 
-        self.valid_until = datetime.now() + timedelta(seconds=token_info["expires_in"])
+        if 'error' in token_info:
+            raise Exception("failed to authenticate")
+
+        self.valid_until = now() + timedelta(seconds=token_info["expires_in"])
         self.access_token = token_info["access_token"]
 
         self.save()
 
     @staticmethod
     def from_oauth(user, auth_code):
-        token_info = simple_sso.get_access_token(
+        token_info = simple_sso.token_from_authcode(
             settings.EVESSO_CLIENT_ID,
             settings.EVESSO_SECRET_KEY,
             auth_code,
@@ -57,14 +61,17 @@ class AccessToken(models.Model):
 
         aux_info = simple_sso.verify_token(token_info["access_token"])
 
-        # TODO: delete existing entries with same character id
+        try:
+            existing_token = AccessToken.objects.get(character_id=aux_info["CharacterID"])
+            existing_token.delete()
+        except AccessToken.DoesNotExist:
+            pass
 
         token = AccessToken(user=user)
         token.refresh_token = token_info["refresh_token"]
         token.access_token = token_info["access_token"]
         expiry_date = dateutil.parser.isoparse(aux_info["ExpiresOn"])
-        expiry_date.replace(tzinfo=UTC)
-        token.valid_until = expiry_date
+        token.valid_until = expiry_date.replace(tzinfo=UTC)
         token.character_id = aux_info["CharacterID"]
         token.character_name = aux_info["CharacterName"]
         token.save()

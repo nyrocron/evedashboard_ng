@@ -1,0 +1,48 @@
+div.character_list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.character {
+    position: relative;
+    width: 340px;
+    height: 200px;
+    background-color: #3366cc;
+    color: white;
+    margin: 0.5em;
+}
+
+div.character span {
+    position: absolute;
+}
+
+div.character span.name {
+    bottom: 1em;
+    right: 0.25em;
+    font-size: 2em;
+}
+
+div.character span.corporation {
+    bottom: 0.5em;
+    right: 0.5em;
+}
+
+div.character span.wallet {
+    top: 0.5em;
+    left: 0.5em;
+}
+
+div.character span.skillpoints {
+    top: 1.75em;
+    left: 0.5em;
+}
+
+div.character span.skillqueue_end {
+    top: 3.0em;
+    left: 0.5em;
+}
+
+div.character span.current_skill {
+    top: 4.25em;
+    left: 0.5em;
+}

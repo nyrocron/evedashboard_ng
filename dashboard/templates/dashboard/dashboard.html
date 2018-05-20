@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load dashboard_tags %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'dashboard/dashboard_style.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="character_list">
+    {% for character in characters %}
+        <div class="character">
+            <span class="name">{{ character.name }}</span>
+            <span class="corporation">{{ character.corporation }}</span>
+
+            <span class="wallet">{{ character.wallet_balance | formatnumber }} ISK</span>
+            <span class="skillpoints">{{ character.total_sp | formatnumber }} SP</span>
+            {% if character.queue_active %}
+            <span class="skillqueue_end">Skillqueue ends in <strong>{{ character.queue_duration | formattimediff }}</strong></span>
+            <span class="current_skill">Training {{ character.training_skill }} {{ character.training_level }}</span>
+            {% else %}
+            <span class="skillqueue_end">Skillqueue inactive!</span>
+            {% endif %}
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}
