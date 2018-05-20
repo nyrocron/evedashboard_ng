@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <ul>
+    {% for character in characters %}
+        <li>
+            "{{ character.character_name }}", added {{ character.added }}
+            <a href="{% url 'eveauth:char_del' character.pk %}">del</a>
+        </li>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'eveauth:char_add' %}">add</a>
+{% endblock %}

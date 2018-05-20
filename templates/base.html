@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}evedashboard-ng{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'base_style.css' %}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+<nav>
+    <ul>
+        <li><a href="{% url 'dashboard:index' %}">Dashboard</a></li>
+        <li><a href="{% url 'eveauth:char_list' %}">Manage Characters</a></li>
+    </ul>
+</nav>
+<main>
+    {% block content %}Welcome to evedashboard-ng{% endblock %}
+</main>
+</body>
+</html>
