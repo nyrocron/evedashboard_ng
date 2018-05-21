@@ -1,5 +1,6 @@
 import json
 from hashlib import md5
+import logging
 
 from django.core.cache import caches
 from django.utils.timezone import now
@@ -12,9 +13,11 @@ import eveauth.models
 
 esi_cache = caches['esi']
 ESI_BASEURL = "https://esi.evetech.net/latest/"
+logger = logging.getLogger(__name__)
 
 
 def esi_query(path):
+    logger.debug(f"ESI query: {path}")
     result = esi_cache.get(path)
 
     if result is None:
@@ -34,6 +37,7 @@ def esi_query(path):
 
 
 def esi_auth_query(token, path, **params):
+    logger.debug(f"ESI authenticated query for '{token.character_name}': {path}")
     hasher = md5()
     hasher.update(f"{path}\n".encode('utf-8'))
     hasher.update(f"{token.character_id}\n".encode('utf-8'))

@@ -1,0 +1,16 @@
+{% load dashboard_tags %}
+<div class="character" data-characterid="{{ id }}">
+    <span class="name">{{ name }}</span>
+    <span class="corporation">{{ corporation }}</span>
+
+    <div class="charinfo">
+        <span class="wallet">{{ wallet_balance | formatnumber }} ISK</span>
+        <span class="skillpoints">{{ total_sp | formatnumber }} SP</span>
+        {% if queue_active %}
+        <span class="skillqueue_end">Skillqueue ends in <strong>{{ queue_duration | formattimediff }}</strong></span>
+        <span class="current_skill">Training {{ training_skill }} {{ training_level }}</span>
+        {% else %}
+        <span class="skillqueue_end warning">Skillqueue inactive!</span>
+        {% endif %}
+    </div>
+</div>

@@ -1,13 +1,14 @@
 div.character_list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 div.character {
     position: relative;
     width: 340px;
     height: 200px;
-    background-color: #3366cc;
+    background-color: #0063ae;
     color: white;
     margin: 0.5em;
 }
@@ -45,4 +46,9 @@ div.character span.skillqueue_end {
 div.character span.current_skill {
     top: 4.25em;
     left: 0.5em;
+}
+
+div.character span.warning {
+    color: #ffbf47;
+    font-weight: bold;
 }

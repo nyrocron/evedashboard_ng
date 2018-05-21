@@ -2,6 +2,32 @@ html, body {
     font-family: sans-serif;
 }
 
+nav {
+    background-color: #0063ae;
+    color: white;
+    text-align: center;
+}
+
 nav ul {
     list-style-type: none;
+    padding: 0;
+}
+
+nav li {
+    display: inline-block;
+}
+
+nav a {
+    display: inline-block;
+    color: white;
+    padding: 0.5em;
+    text-decoration: none;
+}
+
+nav a:visited {
+    color: white;
+}
+
+nav a:hover {
+    background-color: #0072bf;
 }
