@@ -31,6 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'eveauth.apps.EveauthConfig',
+    'dashboard.apps.DashboardConfig',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -119,3 +122,34 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+
+# Django caching
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'defaultcache',
+    },
+    'esi': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'esicache',
+    },
+}
+
+
+# Logging
+#LOGGING_CONFIG = None
+#import logging
+#logging.basicConfig(level=logging.DEBUG)
+
+
+# EVE Authentication
+EVESSO_CLIENT_ID = 'please'
+EVESSO_SECRET_KEY = 'fill in'
+
+
+EVESTATIC_DB = 'sqlite-latest.sqlite'
