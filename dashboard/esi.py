@@ -16,12 +16,19 @@ ESI_BASEURL = "https://esi.evetech.net/latest/"
 logger = logging.getLogger(__name__)
 
 
+class ESIError(Exception):
+    pass
+
+
 def esi_query(path):
     logger.debug(f"ESI query: {path}")
     result = esi_cache.get(path)
 
     if result is None:
         response = requests.get(ESI_BASEURL + path)
+
+        if response.status_code != 200:
+            raise ESIError()
 
         try:
             expires_at = dateutil.parser.parse(response.headers['expires'])
@@ -30,7 +37,6 @@ def esi_query(path):
             cache_time = 60
 
         result = response.content
-        dateutil.parser.parse(response.headers['expires'])
         esi_cache.set(path, result, cache_time)
 
     return result
@@ -52,6 +58,9 @@ def esi_auth_query(token, path, **params):
             "token": token.get_access_token(),
         })
 
+        if response.status_code != 200:
+            raise ESIError()
+
         try:
             expires_at = dateutil.parser.parse(response.headers['expires'])
             cache_time = (expires_at - now()).total_seconds()
@@ -59,7 +68,6 @@ def esi_auth_query(token, path, **params):
             cache_time = 60
 
         result = response.content
-        dateutil.parser.parse(response.headers['expires'])
         esi_cache.set(cache_key, result, cache_time)
 
     return result
