@@ -48,4 +48,24 @@ def character(request, id):
     else:
         context['queue_active'] = False
 
+    mail_list = esi.mail_list(token)
+    context['new_mail'] = any("is_read" not in mail or not mail["is_read"] for mail in mail_list)
+
     return render(request, 'dashboard/character_tile.html', context)
+
+
+@login_required
+def character_mail_list(request, id):
+    token = request.user.accesstoken_set.get(character_id=id)
+    mail_list = esi.mail_list(token)
+
+    mails = []
+    for mail in mail_list:
+        mails.append({
+            'unread': 'is_read' not in mail or not mail['is_read'],
+            'timestamp': mail['timestamp'],
+            'from': esi.entity_name(mail['from']),
+            'subject': mail['subject'],
+        })
+
+    return render(request, 'dashboard/mail_list.html', {'mails': mails})

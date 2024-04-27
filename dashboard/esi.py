@@ -28,7 +28,7 @@ def esi_query(path):
         response = requests.get(ESI_BASEURL + path)
 
         if response.status_code != 200:
-            raise ESIError()
+            raise ESIError(str(path))
 
         try:
             expires_at = dateutil.parser.parse(response.headers['expires'])
@@ -38,6 +38,28 @@ def esi_query(path):
 
         result = response.content
         esi_cache.set(path, result, cache_time)
+
+    return result
+
+
+def entity_name(id):
+    cache_key = f'entity_name:{id}'
+    result = esi_cache.get(cache_key)
+
+    if result is None:
+        try:
+            entity = character(id)
+        except ESIError:
+            try:
+                entity = corporation(id)
+            except ESIError:
+                try:
+                    entity = alliance(id)
+                except ESIError:
+                    raise
+
+        result = entity['name']
+        esi_cache.set(cache_key, result, 259200)
 
     return result
 
@@ -95,3 +117,12 @@ def corporation(corporation_id):
 
 def alliance(alliance_id):
     return json.loads(esi_query(f"alliances/{alliance_id}/"))
+
+
+def mail_list(token):
+    return json.loads(esi_auth_query(token, 'characters/{character_id}/mail/'))
+
+
+def mail_content(token, mail_id):
+    return json.loads(esi_auth_query(token, 'characters/{character_id}/mail/{mail_id}/', mail_id=mail_id))
+

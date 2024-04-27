@@ -48,6 +48,13 @@ div.character span.current_skill {
     left: 0.5em;
 }
 
+div.character span.new_mail {
+    right: 0.5em;
+    top: 0.2em;
+    font-size: 1.4em;
+    color: white;
+}
+
 div.character span.warning {
     color: #ffbf47;
     font-weight: bold;

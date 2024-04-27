@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'dashboard/mail_style.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="mail_list">
+        <table>
+        <thead>
+        <tr>
+            <th></th>
+            <th>Timestamp</th>
+            <th>From</th>
+            <th>Subject</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for mail in mails %}
+            <tr>
+                <td>{% if mail.unread %}✉{% endif %}</td>
+                <td>{{ mail.timestamp }}</td>
+                <td>{{ mail.from }}</td>
+                <td>{{ mail.subject }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    </div>
+{% endblock %}

@@ -12,5 +12,8 @@
         {% else %}
         <span class="skillqueue_end warning">Skillqueue inactive!</span>
         {% endif %}
+        {% if new_mail %}
+        <a href="{% url 'dashboard:character_mail_list' id %}"><span class="new_mail">✉</span></a>
+        {% endif %}
     </div>
 </div>
